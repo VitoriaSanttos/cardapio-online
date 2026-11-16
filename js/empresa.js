@@ -51,6 +51,8 @@ var EMPRESA = {
         tituloDestaque: 'favorita.',
         descricao: 'Aproveite nosso cardápio! Escolha o que desejar e receba em sua casa de forma rápida e segura.',
         imagemBanner: './img/burguer.png',
+        // foto ao lado dos depoimentos
+        imagemDepoimentos: './img/cardapio/pizzas/wood-fired-pizzas-best-seller-4-pack.1653bb05922ba153ac178f8365d27f6d.jpg',
         depoimentoBanner: {
             texto: 'Entrega rápida e funcionários simpáticos. A comida chegou quente e muito saborosa!',
             nome: 'Thiago Lopes'

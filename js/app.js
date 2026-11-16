@@ -1,5 +1,6 @@
 $(document).ready(function () {
-    cardapio.eventos.init();
+    // com ?loja=, espera os dados da loja chegarem do banco
+    LOJA.carregar().then(() => cardapio.eventos.init());
 })
 
 var cardapio = {};
@@ -17,8 +18,8 @@ var MESA_QRCODE = null;
 var PEDIDO = null;
 
 var ITENS_POR_PAGINA = 8;
-var CHAVE_STORAGE = 'cardapio-carrinho';
-var CHAVE_CLIENTE = 'cardapio-cliente';
+var CHAVE_STORAGE = 'cardapio-carrinho' + LOJA.sufixo();
+var CHAVE_CLIENTE = 'cardapio-cliente' + LOJA.sufixo();
 var IMAGEM_PADRAO = './img/sem-imagem.svg';
 
 cardapio.eventos = {
@@ -91,8 +92,19 @@ cardapio.metodos = {
         $("#lblDescricaoSite").text(site.descricao || '');
         $("#lblTelefone").text(EMPRESA.telefoneExibicao || '');
 
+        // imagens do topo e dos depoimentos (escondidas quando não configuradas)
         if (site.imagemBanner) {
             $("#imgBanner").attr('src', site.imagemBanner);
+        }
+        else {
+            $("#imgBanner").closest('.img-banner').addClass('hidden');
+        }
+
+        if (site.imagemDepoimentos) {
+            $("#imgDepoimentos").attr('src', site.imagemDepoimentos);
+        }
+        else {
+            $("#imgDepoimentos").closest('.img-banner').addClass('hidden');
         }
 
         if (site.depoimentoBanner && site.depoimentoBanner.texto) {
@@ -104,8 +116,11 @@ cardapio.metodos = {
         }
 
         // redes sociais: esconde as que não foram configuradas
-        $(".link-instagram").attr('href', EMPRESA.instagram).toggleClass('hidden', !EMPRESA.instagram);
-        $(".link-facebook").attr('href', EMPRESA.facebook).toggleClass('hidden', !EMPRESA.facebook);
+        let instagram = COMUM.urlSegura(EMPRESA.instagram);
+        let facebook = COMUM.urlSegura(EMPRESA.facebook);
+
+        $(".link-instagram").attr('href', instagram).toggleClass('hidden', !instagram);
+        $(".link-facebook").attr('href', facebook).toggleClass('hidden', !facebook);
         $(".link-whatsapp").attr({ href: COMUM.linkWhatsApp(), target: '_blank' });
 
         $("#btnLigar").attr('href', `tel:+${EMPRESA.whatsapp}`);
@@ -148,7 +163,7 @@ cardapio.metodos = {
                 nome: e.nome,
                 texto: e.texto,
                 nota: nota.toFixed(1),
-                foto: e.foto || IMAGEM_PADRAO
+                foto: COMUM.urlSegura(e.foto) || IMAGEM_PADRAO
             }).replace('{{estrelas}}', estrelas);
 
             $("#listaDepoimentos").append(temp);

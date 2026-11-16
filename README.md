@@ -14,7 +14,49 @@ são só arquivos HTML, CSS e JavaScript.
 | `bio.html` | Página para colocar no link da bio do Instagram |
 | `qrcodes.html` | Gera os QR codes das mesas, do balcão e da bio para imprimir (4 por folha A4) ou baixar em PNG |
 
-## Como montar o site de uma nova empresa
+## Modo SaaS (várias lojas com painel)
+
+Com o Supabase configurado em `js/config.js`, cada loja é cadastrada pelo painel e
+o cardápio é aberto pelo endereço da loja:
+
+| Página | Para que serve |
+| --- | --- |
+| `painel.html` | Painel: a DuoTech cria lojas e acessos; o dono edita logo, dados, cores, cardápio, Pix e bio |
+| `index.html?loja=sr-john` | Cardápio da loja `sr-john` |
+| `index.html?loja=sr-john&mesa=5` | Cardápio pelo QR code da mesa 5 |
+| `bio.html?loja=sr-john` | Link da bio da loja |
+| `qrcodes.html?loja=sr-john` | QR codes da loja para imprimir |
+
+Sem `?loja=`, o site usa a demonstração local (`js/empresa.js` e `js/dados.js`).
+
+### Banco de dados
+
+O SQL fica em `supabase/migrations/` e a função que cria o acesso do dono em
+`supabase/functions/criar-acesso/`. As regras de segurança (RLS) garantem que cada
+dono só vê e edita a própria loja; só administradores criam lojas e acessos.
+
+### Primeiro administrador
+
+1. No Supabase, vá em **Authentication → Users → Add user → Create new user**,
+   com o seu e-mail, uma senha e **Auto Confirm User** marcado.
+2. No **SQL Editor**, rode (trocando o e-mail):
+
+   ```sql
+   insert into public.admins (user_id)
+   select id from auth.users where email = 'seu-email@exemplo.com';
+   ```
+
+3. Entre em `painel.html` com esse e-mail e senha.
+
+### Fluxo de uma loja nova
+
+1. No painel, **Nova loja**: nome e endereço (ex.: `sr-john`).
+2. Preencha as abas **Loja**, **Cardápio**, **Pedidos e pagamento** e **Página e bio**.
+3. Na aba **Acessos**, crie o acesso do dono (e-mail + senha provisória) e copie a
+   mensagem pronta para enviar a ele.
+4. Imprima os QR codes pelo botão **QR codes**.
+
+## Como montar o site de uma nova empresa (sem painel)
 
 Cada empresa é uma cópia desta pasta. Para criar uma nova:
 

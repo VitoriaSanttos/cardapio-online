@@ -13,6 +13,9 @@
         <!-- dados da empresa: edite js/empresa.js -->
         <script type="text/javascript" src="./js/empresa.js"></script>
         <script type="text/javascript" src="./js/comum.js"></script>
+        <script type="text/javascript" src="./js/config.js"></script>
+        <script type="text/javascript" src="./js/loja.js"></script>
+        <script type="text/javascript" src="./js/supabase.js"></script>
     </head>
 
     <body>
@@ -38,7 +41,8 @@
 
         <script type="text/javascript">
 
-            (function () {
+            // com ?loja=, espera os dados da loja chegarem do banco
+            LOJA.carregar().then(function () {
 
                 var esc = COMUM.escapar;
 
@@ -57,7 +61,7 @@
                     titulo: 'Cardápio e pedidos',
                     subtitulo: 'Peça para retirar, receber em casa ou na mesa',
                     icone: 'fas fa-utensils',
-                    url: './index.html#cardapio',
+                    url: LOJA.link('./index.html') + '#cardapio',
                     destaque: true
                 });
 
@@ -72,11 +76,14 @@
 
                 // botões extras configurados em js/empresa.js
                 (EMPRESA.linksBio || []).forEach(function (link) {
+                    var url = link.url ? COMUM.urlSegura(link.url) : COMUM.linkWhatsApp(link.mensagem || '');
+                    if (!link.titulo || !url) return;
+
                     links.push({
                         titulo: link.titulo,
                         subtitulo: link.subtitulo || '',
                         icone: link.icone || 'fas fa-link',
-                        url: link.url || COMUM.linkWhatsApp(link.mensagem || '')
+                        url: url
                     });
                 });
 
@@ -89,7 +96,7 @@
                     });
                 }
 
-                if (EMPRESA.instagram) {
+                if (COMUM.urlSegura(EMPRESA.instagram)) {
 
                     // https://www.instagram.com/minhaloja/ => @minhaloja
                     var perfil = EMPRESA.instagram.replace(/^https?:\/\/[^/]+\/?/, '').split(/[/?#]/)[0];
@@ -102,7 +109,7 @@
                     });
                 }
 
-                if (EMPRESA.facebook) {
+                if (COMUM.urlSegura(EMPRESA.facebook)) {
                     links.push({
                         titulo: 'Facebook',
                         subtitulo: '',
@@ -126,7 +133,7 @@
 
                 }).join('');
 
-            })();
+            });
 
         </script>
 

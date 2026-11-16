@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="robots" content="noindex" />
+        <meta name="theme-color" content="#212121" />
+        <title>Painel do cardápio</title>
+
+        <link rel="icon" href="./img/logo.svg" type="image/svg+xml" />
+        <link rel="stylesheet" href="./css/fontawesome.css" />
+        <link rel="stylesheet" href="./css/painel.css" />
+    </head>
+
+    <body>
+
+        <div id="mensagens" class="mensagens" aria-live="polite"></div>
+
+        <!-- ================= carregando ================= -->
+        <section id="telaCarregando" class="tela-centro">
+            <p class="carregando"><i class="fas fa-utensils"></i> Carregando...</p>
+        </section>
+
+        <!-- ================= login ================= -->
+        <section id="telaLogin" class="tela-centro hidden">
+            <form id="formLogin" class="cartao login">
+                <div class="login-icone"><i class="fas fa-utensils"></i></div>
+                <h1>Painel do cardápio</h1>
+                <p class="dica">Entre com o e-mail e a senha que você recebeu.</p>
+
+                <label>
+                    E-mail
+                    <input type="email" id="loginEmail" required autocomplete="username" />
+                </label>
+                <label>
+                    Senha
+                    <input type="password" id="loginSenha" required autocomplete="current-password" />
+                </label>
+
+                <button type="submit" class="botao principal largo">Entrar</button>
+                <p class="dica">Esqueceu a senha? Fale com o suporte para receber uma nova.</p>
+            </form>
+        </section>
+
+        <!-- ================= aplicativo ================= -->
+        <div id="telaApp" class="hidden">
+
+            <header class="topo">
+                <b class="topo-marca"><i class="fas fa-utensils"></i> Painel</b>
+                <span id="lblUsuario" class="topo-usuario"></span>
+                <button type="button" id="btnTrocarSenha" class="botao pequeno"><i class="fas fa-key"></i> <span>Trocar senha</span></button>
+                <button type="button" id="btnSair" class="botao pequeno"><i class="fas fa-sign-out-alt"></i> <span>Sair</span></button>
+            </header>
+
+            <main class="conteudo">
+
+                <!-- ---------- lista de lojas ---------- -->
+                <section id="telaLojas" class="hidden">
+
+                    <div class="cabecalho">
+                        <h1>Lojas</h1>
+                    </div>
+
+                    <form id="formNovaLoja" class="cartao so-admin hidden">
+                        <h2>Nova loja</h2>
+                        <div class="grade">
+                            <label>
+                                Nome da loja
+                                <input id="novaLojaNome" required maxlength="80" placeholder="Ex.: Pizzaria do Zé" />
+                            </label>
+                            <label>
+                                Endereço do cardápio
+                                <span class="com-prefixo">
+                                    <span>?loja=</span>
+                                    <input id="novaLojaSlug" required minlength="3" maxlength="40"
+                                        pattern="[a-z0-9]+(-[a-z0-9]+)*" placeholder="pizzaria-do-ze"
+                                        title="Só letras minúsculas, números e hífen" />
+                                </span>
+                            </label>
+                        </div>
+                        <button type="submit" class="botao principal"><i class="fas fa-plus"></i> Criar loja</button>
+                    </form>
+
+                    <div id="listaLojas" class="lista-lojas"></div>
+
+                    <p id="semLojas" class="cartao vazio hidden">
+                        Sua conta ainda não tem nenhuma loja liberada. Fale com o suporte.
+                    </p>
+
+                </section>
+
+                <!-- ---------- editor da loja ---------- -->
+                <section id="telaLoja" class="hidden">
+
+                    <div class="cabecalho">
+                        <button type="button" id="btnVoltarLojas" class="botao pequeno"><i class="fas fa-chevron-left"></i> Lojas</button>
+                        <h1 id="lblNomeLoja"></h1>
+                        <span id="lblLojaInativa" class="selo selo-alerta hidden">Desativada</span>
+                    </div>
+
+                    <div class="atalhos">
+                        <a id="lnkCardapio" class="botao pequeno" target="_blank"><i class="fas fa-external-link-alt"></i> Ver cardápio</a>
+                        <a id="lnkBio" class="botao pequeno" target="_blank"><i class="fas fa-link"></i> Link da bio</a>
+                        <a id="lnkQr" class="botao pequeno" target="_blank"><i class="fas fa-print"></i> QR codes</a>
+                    </div>
+
+                    <nav class="abas" id="abas">
+                        <button type="button" data-aba="abaLoja" class="active"><i class="fas fa-store"></i> Loja</button>
+                        <button type="button" data-aba="abaCardapio"><i class="fas fa-utensils"></i> Cardápio</button>
+                        <button type="button" data-aba="abaPedidos"><i class="fas fa-motorcycle"></i> Pedidos e pagamento</button>
+                        <button type="button" data-aba="abaPagina"><i class="fas fa-image"></i> Página e bio</button>
+                        <button type="button" data-aba="abaAcessos" class="so-admin hidden"><i class="fas fa-users"></i> Acessos</button>
+                    </nav>
+
+                    <!-- aba: loja -->
+                    <form id="abaLoja" class="aba cartao form-loja">
+
+                        <h2>Identidade</h2>
+                        <div class="grade">
+                            <label>
+                                Nome da loja
+                                <input data-campo="nome" required maxlength="80" />
+                            </label>
+                            <label>
+                                Frase curta (aparece embaixo do nome)
+                                <input data-campo="slogan" maxlength="80" placeholder="Ex.: Chocolates & Café" />
+                            </label>
+                        </div>
+
+                        <div class="campo-imagem" data-campo="logo_url" data-tipo="logo">
+                            <span class="rotulo">Logo</span>
+                            <div class="imagem-previa"><img alt="" /></div>
+                            <div class="imagem-acoes">
+                                <label class="botao pequeno"><i class="fas fa-image"></i> Escolher imagem
+                                    <input type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden />
+                                </label>
+                                <button type="button" class="botao pequeno remover-imagem"><i class="fas fa-trash-alt"></i> Remover</button>
+                                <small>PNG com fundo transparente fica melhor. Até 5 MB.</small>
+                            </div>
+                        </div>
+
+                        <h2>Cores</h2>
+                        <div class="grade grade-3">
+                            <label>
+                                Principal (botões e preços)
+                                <input type="color" data-campo="cor_primaria" />
+                            </label>
+                            <label>
+                                Clara (fundos e cartões)
+                                <input type="color" data-campo="cor_secundaria" />
+                            </label>
+                            <label>
+                                Fundo da página
+                                <input type="color" data-campo="cor_fundo" />
+                            </label>
+                        </div>
+
+                        <h2>Contato e endereço</h2>
+                        <div class="grade">
+                            <label>
+                                WhatsApp que recebe os pedidos
+                                <input data-campo="whatsapp" data-tipo="telefone" inputmode="numeric" placeholder="5516999999999" />
+                                <small>Só números: 55 + DDD + número.</small>
+                            </label>
+                            <label>
+                                Telefone como aparece no site
+                                <input data-campo="telefone_exibicao" maxlength="30" placeholder="(16) 99999-9999" />
+                            </label>
+                            <label>
+                                Instagram
+                                <input data-campo="instagram" data-tipo="url" placeholder="https://www.instagram.com/sualoja/" />
+                            </label>
+                            <label>
+                                Facebook
+                                <input data-campo="facebook" data-tipo="url" placeholder="https://www.facebook.com/sualoja" />
+                            </label>
+                            <label class="largura-total">
+                                Endereço da loja
+                                <input data-campo="endereco" maxlength="200" placeholder="Rua, número - bairro, cidade - UF" />
+                            </label>
+                            <label>
+                                Link do Google Maps (opcional)
+                                <input data-campo="link_mapa" data-tipo="url" placeholder="Se ficar vazio, usamos o endereço" />
+                            </label>
+                            <label>
+                                Endereço do site (para os QR codes)
+                                <input data-campo="url_site" data-tipo="url" placeholder="https://sualoja.com.br/" />
+                                <small>Deixe vazio para usar o endereço deste sistema.</small>
+                            </label>
+                        </div>
+
+                        <div class="rodape-form">
+                            <button type="submit" class="botao principal"><i class="fas fa-save"></i> Salvar</button>
+                        </div>
+                    </form>
+
+                    <!-- aba: cardápio -->
+                    <section id="abaCardapio" class="aba hidden">
+
+                        <p class="dica">
+                            As mudanças do cardápio são salvas na hora. Itens marcados como indisponíveis
+                            somem do cardápio sem precisar excluir.
+                        </p>
+
+                        <div id="listaCategorias"></div>
+
+                        <form id="formNovaCategoria" class="cartao nova-categoria">
+                            <select id="novaCategoriaIcone" aria-label="Ícone"></select>
+                            <input id="novaCategoriaNome" required maxlength="60" placeholder="Nova categoria (ex.: Cafés, Lanches, Bebidas)" />
+                            <button type="submit" class="botao principal"><i class="fas fa-plus"></i> Adicionar categoria</button>
+                        </form>
+
+                    </section>
+
+                    <!-- aba: pedidos e pagamento -->
+                    <form id="abaPedidos" class="aba cartao form-loja hidden">
+
+                        <h2>Como o cliente recebe o pedido</h2>
+                        <div class="opcoes">
+                            <label class="opcao"><input type="checkbox" data-campo="aceita_retirada" /> Retirada no balcão</label>
+                            <label class="opcao"><input type="checkbox" data-campo="aceita_entrega" /> Entrega</label>
+                            <label class="opcao"><input type="checkbox" data-campo="aceita_mesa" /> Pedido na mesa (QR code)</label>
+                        </div>
+
+                        <div class="grade">
+                            <label>
+                                Quantidade de mesas
+                                <input type="number" min="0" max="500" data-campo="quantidade_mesas" />
+                            </label>
+                            <label>
+                                Taxa de entrega (R$)
+                                <input data-campo="taxa_entrega" data-tipo="dinheiro" inputmode="decimal" placeholder="0,00" />
+                                <label class="opcao em-linha"><input type="checkbox" id="chkTaxaCombinar" /> A combinar pelo WhatsApp</label>
+                            </label>
+                        </div>
+
+                        <h2>Pix com QR Code no valor do pedido</h2>
+                        <p class="dica">Com os três campos preenchidos, o cliente vê a opção <b>Pix agora</b>. Faça um Pix de teste antes de divulgar.</p>
+                        <div class="grade grade-3">
+                            <label>
+                                Chave Pix
+                                <input data-campo="pix_chave" maxlength="77" placeholder="CNPJ, e-mail, +55 telefone..." />
+                            </label>
+                            <label>
+                                Nome do recebedor
+                                <input data-campo="pix_nome" maxlength="25" placeholder="Como está no banco" />
+                            </label>
+                            <label>
+                                Cidade do recebedor
+                                <input data-campo="pix_cidade" maxlength="15" />
+                            </label>
+                        </div>
+
+                        <h2>Cartão online</h2>
+                        <label>
+                            Link de pagamento (Mercado Pago, InfinitePay etc.)
+                            <input data-campo="link_cartao" data-tipo="url" placeholder="Deixe vazio para não oferecer" />
+                        </label>
+
+                        <h2>Pagar na entrega, na retirada ou no caixa</h2>
+                        <div class="opcoes">
+                            <label class="opcao"><input type="checkbox" data-campo="pagar_pix" /> Pix</label>
+                            <label class="opcao"><input type="checkbox" data-campo="pagar_cartao" /> Cartão de crédito ou débito</label>
+                            <label class="opcao"><input type="checkbox" data-campo="pagar_dinheiro" /> Dinheiro</label>
+                        </div>
+
+                        <div class="rodape-form">
+                            <button type="submit" class="botao principal"><i class="fas fa-save"></i> Salvar</button>
+                        </div>
+                    </form>
+
+                    <!-- aba: página e bio -->
+                    <form id="abaPagina" class="aba cartao form-loja hidden">
+
+                        <h2>Link da bio</h2>
+                        <label>
+                            Texto de apresentação
+                            <textarea data-campo="descricao_bio" maxlength="300" rows="2" placeholder="Ex.: Aqui tem café bom e chocolate de verdade."></textarea>
+                        </label>
+
+                        <span class="rotulo">Botões extras da bio</span>
+                        <p class="dica">Ficam entre "Falar no WhatsApp" e "Como chegar". Use uma mensagem para abrir o WhatsApp com texto pronto, ou um link.</p>
+                        <div id="listaLinksBio" class="lista-editavel"></div>
+                        <button type="button" class="botao pequeno" id="btnNovoLinkBio"><i class="fas fa-plus"></i> Adicionar botão</button>
+
+                        <h2>Página inicial do cardápio</h2>
+                        <div class="grade">
+                            <label>
+                                Título
+                                <input data-campo="site.titulo" maxlength="60" placeholder="Escolha sua comida" />
+                            </label>
+                            <label>
+                                Final do título (em destaque)
+                                <input data-campo="site.tituloDestaque" maxlength="30" placeholder="favorita." />
+                            </label>
+                            <label class="largura-total">
+                                Texto
+                                <textarea data-campo="site.descricao" maxlength="200" rows="2"></textarea>
+                            </label>
+                        </div>
+
+                        <div class="grade">
+                            <div class="campo-imagem" data-campo="site.imagemBanner" data-tipo="banner">
+                                <span class="rotulo">Imagem do topo</span>
+                                <div class="imagem-previa"><img alt="" /></div>
+                                <div class="imagem-acoes">
+                                    <label class="botao pequeno"><i class="fas fa-image"></i> Escolher
+                                        <input type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden />
+                                    </label>
+                                    <button type="button" class="botao pequeno remover-imagem"><i class="fas fa-trash-alt"></i></button>
+                                </div>
+                            </div>
+                            <div class="campo-imagem" data-campo="site.imagemDepoimentos" data-tipo="depoimentos">
+                                <span class="rotulo">Imagem ao lado dos depoimentos</span>
+                                <div class="imagem-previa"><img alt="" /></div>
+                                <div class="imagem-acoes">
+                                    <label class="botao pequeno"><i class="fas fa-image"></i> Escolher
+                                        <input type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden />
+                                    </label>
+                                    <button type="button" class="botao pequeno remover-imagem"><i class="fas fa-trash-alt"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <label class="opcao"><input type="checkbox" data-campo="site.reservas" /> Mostrar a seção "Quer reservar um horário?"</label>
+
+                        <span class="rotulo">Depoimentos de clientes</span>
+                        <div id="listaDepoimentos" class="lista-editavel"></div>
+                        <button type="button" class="botao pequeno" id="btnNovoDepoimento"><i class="fas fa-plus"></i> Adicionar depoimento</button>
+
+                        <div class="rodape-form">
+                            <button type="submit" class="botao principal"><i class="fas fa-save"></i> Salvar</button>
+                        </div>
+                    </form>
+
+                    <!-- aba: acessos (só administradores) -->
+                    <section id="abaAcessos" class="aba hidden">
+
+                        <form id="formStatusLoja" class="cartao">
+                            <h2>Loja</h2>
+                            <div class="grade">
+                                <label>
+                                    Endereço do cardápio
+                                    <span class="com-prefixo">
+                                        <span>?loja=</span>
+                                        <input id="txtSlug" required minlength="3" maxlength="40" pattern="[a-z0-9]+(-[a-z0-9]+)*"
+                                            title="Só letras minúsculas, números e hífen" />
+                                    </span>
+                                    <small>Mudar o endereço invalida os QR codes já impressos.</small>
+                                </label>
+                                <label class="opcao"><input type="checkbox" id="chkLojaAtiva" /> Loja ativa (cardápio no ar)</label>
+                            </div>
+                            <button type="submit" class="botao principal"><i class="fas fa-save"></i> Salvar</button>
+                        </form>
+
+                        <div class="cartao">
+                            <h2>Quem acessa o painel desta loja</h2>
+                            <div id="listaAcessos" class="lista-acessos"></div>
+                        </div>
+
+                        <form id="formAcesso" class="cartao">
+                            <h2>Criar acesso ou trocar senha</h2>
+                            <p class="dica">Se o e-mail já tiver acesso, a senha dele é trocada por esta.</p>
+                            <div class="grade">
+                                <label>
+                                    E-mail do dono da loja
+                                    <input type="email" id="acessoEmail" required />
+                                </label>
+                                <label>
+                                    Senha provisória
+                                    <span class="com-botao">
+                                        <input id="acessoSenha" required minlength="8" autocomplete="new-password" />
+                                        <button type="button" class="botao pequeno" id="btnGerarSenha">Gerar</button>
+                                    </span>
+                                </label>
+                            </div>
+                            <button type="submit" class="botao principal"><i class="fas fa-key"></i> Salvar acesso</button>
+
+                            <div id="resultadoAcesso" class="resultado-acesso hidden">
+                                <p><b>Pronto!</b> Envie esta mensagem para o dono da loja:</p>
+                                <textarea id="txtMensagemAcesso" rows="6" readonly></textarea>
+                                <button type="button" class="botao pequeno" id="btnCopiarAcesso"><i class="fas fa-copy"></i> Copiar mensagem</button>
+                            </div>
+                        </form>
+
+                        <div class="cartao zona-perigo">
+                            <h2>Excluir loja</h2>
+                            <p class="dica">Apaga a loja, o cardápio e os acessos. Não dá para desfazer.</p>
+                            <button type="button" class="botao perigo" id="btnExcluirLoja"><i class="fas fa-trash-alt"></i> Excluir esta loja</button>
+                        </div>
+
+                    </section>
+
+                </section>
+
+            </main>
+        </div>
+
+        <!-- ================= produto ================= -->
+        <dialog id="dlgProduto" class="dialogo">
+            <form id="formProduto" method="dialog">
+                <h2 id="lblTituloProduto">Produto</h2>
+
+                <div class="campo-imagem" id="imagemProduto" data-tipo="produto">
+                    <div class="imagem-previa"><img alt="" /></div>
+                    <div class="imagem-acoes">
+                        <label class="botao pequeno"><i class="fas fa-image"></i> Escolher foto
+                            <input type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden />
+                        </label>
+                        <button type="button" class="botao pequeno remover-imagem"><i class="fas fa-trash-alt"></i> Remover</button>
+                    </div>
+                </div>
+
+                <label>
+                    Nome
+                    <input id="produtoNome" required maxlength="100" />
+                </label>
+                <label>
+                    Descrição
+                    <textarea id="produtoDescricao" maxlength="500" rows="3" placeholder="Ingredientes, tamanho, observações..."></textarea>
+                </label>
+                <div class="grade">
+                    <label>
+                        Preço (R$)
+                        <input id="produtoPreco" required inputmode="decimal" placeholder="0,00" />
+                    </label>
+                    <label>
+                        Categoria
+                        <select id="produtoCategoria"></select>
+                    </label>
+                </div>
+                <label class="opcao"><input type="checkbox" id="produtoAtivo" /> Disponível no cardápio</label>
+
+                <div class="rodape-form">
+                    <button type="button" class="botao" id="btnCancelarProduto">Cancelar</button>
+                    <button type="submit" class="botao principal" value="salvar"><i class="fas fa-save"></i> Salvar</button>
+                </div>
+            </form>
+        </dialog>
+
+        <!-- ================= trocar senha ================= -->
+        <dialog id="dlgSenha" class="dialogo">
+            <form id="formSenha" method="dialog">
+                <h2>Trocar senha</h2>
+                <label>
+                    Nova senha
+                    <input type="password" id="novaSenha" required minlength="8" autocomplete="new-password" />
+                </label>
+                <label>
+                    Repita a nova senha
+                    <input type="password" id="novaSenha2" required minlength="8" autocomplete="new-password" />
+                </label>
+                <div class="rodape-form">
+                    <button type="button" class="botao" id="btnCancelarSenha">Cancelar</button>
+                    <button type="submit" class="botao principal" value="salvar">Salvar</button>
+                </div>
+            </form>
+        </dialog>
+
+        <script type="text/javascript" src="./js/config.js"></script>
+        <script type="text/javascript" src="./js/supabase.js"></script>
+        <script type="text/javascript" src="./js/painel.js"></script>
+
+    </body>
+
+</html>

@@ -53,6 +53,12 @@ var COMUM = {
 
     },
 
+    // aceita só links seguros (evita "javascript:" vindo de dados cadastrados)
+    urlSegura: (url) => {
+        url = String(url || '').trim();
+        return /^(https?:\/\/|\.\/|tel:|mailto:)/i.test(url) ? url : '';
+    },
+
     // escapa texto antes de colocar no HTML
     escapar: (texto) => {
         return String(texto == null ? '' : texto)

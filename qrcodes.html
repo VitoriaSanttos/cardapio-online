@@ -13,6 +13,9 @@
         <!-- dados da empresa: edite js/empresa.js -->
         <script type="text/javascript" src="./js/empresa.js"></script>
         <script type="text/javascript" src="./js/comum.js"></script>
+        <script type="text/javascript" src="./js/config.js"></script>
+        <script type="text/javascript" src="./js/loja.js"></script>
+        <script type="text/javascript" src="./js/supabase.js"></script>
         <script type="text/javascript" src="./js/qrcode.js"></script>
     </head>
 
@@ -75,7 +78,7 @@
                         lista.push({
                             titulo: 'Cardápio online',
                             texto: 'Aponte a câmera do celular para ver o cardápio e fazer seu pedido.',
-                            url: base + 'index.html',
+                            url: base + LOJA.link('index.html'),
                             arquivo: 'qrcode-cardapio'
                         });
                     }
@@ -84,7 +87,7 @@
                         lista.push({
                             titulo: 'Nossos links',
                             texto: 'Cardápio, WhatsApp, localização e redes sociais.',
-                            url: base + 'bio.html',
+                            url: base + LOJA.link('bio.html'),
                             arquivo: 'qrcode-link-da-bio'
                         });
                     }
@@ -94,7 +97,7 @@
                             lista.push({
                                 titulo: 'MESA ' + mesa,
                                 texto: 'Aponte a câmera do celular, escolha os itens e envie o pedido pelo WhatsApp.',
-                                url: base + 'index.html?mesa=' + mesa,
+                                url: base + LOJA.link('index.html', { mesa: mesa }),
                                 arquivo: 'qrcode-mesa-' + mesa,
                                 mesa: true
                             });
@@ -213,13 +216,19 @@
 
             };
 
-            document.getElementById('txtMesaFinal').value = (EMPRESA.pedido || {}).quantidadeMesas || 1;
+            // com ?loja=, espera os dados da loja chegarem do banco
+            LOJA.carregar().then(() => {
 
-            ['txtMesaInicial', 'txtMesaFinal', 'chkGeral', 'chkBio'].forEach((id) => {
-                document.getElementById(id).addEventListener('change', QRCODES.gerar);
+                document.title = 'QR codes - ' + EMPRESA.nome;
+                document.getElementById('txtMesaFinal').value = (EMPRESA.pedido || {}).quantidadeMesas || 1;
+
+                ['txtMesaInicial', 'txtMesaFinal', 'chkGeral', 'chkBio'].forEach((id) => {
+                    document.getElementById(id).addEventListener('change', QRCODES.gerar);
+                });
+
+                QRCODES.gerar();
+
             });
-
-            QRCODES.gerar();
 
         </script>
 
