@@ -365,6 +365,7 @@ a.navbar-brand {
 }
 
 .imagem-depoimento {
+    background-size: cover;
     width: 65px;
     height: 65px;
     background-color: var(--color-white);
@@ -372,21 +373,6 @@ a.navbar-brand {
     background-repeat: no-repeat;
     background-position: center;
     margin-right: 15px;
-}
-
-#depoimento-1 .imagem-depoimento {
-    background-image: url(../img/diego.svg);
-    background-size: cover;
-}
-
-#depoimento-2 .imagem-depoimento {
-    background-image: url(../img/ana.jpg);
-    background-size: cover;
-}
-
-#depoimento-3 .imagem-depoimento {
-    background-image: url(../img/joao.svg);
-    background-size: cover;
 }
 
 .nome-depoimento {
@@ -799,4 +785,221 @@ select.form-control {
 
 .container-mensagens .toast {
     pointer-events: auto;
+}
+
+/* ---------- busca e aviso de mesa ---------- */
+
+.container-busca {
+    position: relative;
+    max-width: 520px;
+    margin: 0 auto;
+}
+
+.container-busca i {
+    position: absolute;
+    left: 22px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text-out);
+    z-index: 1;
+}
+
+.container-busca .form-control {
+    padding-left: 55px;
+    font-size: 18px;
+}
+
+.container-menu {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px 0;
+}
+
+.dsc-produto {
+    color: var(--color-text-out);
+    font-size: 13px;
+    padding: 0 12px;
+    margin-bottom: 6px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.dsc-produto:empty {
+    display: none;
+}
+
+.busca-vazia {
+    color: var(--color-text-out);
+    font-size: 18px;
+    padding: 30px 0;
+}
+
+.aviso-mesa {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background-color: var(--color-secondary);
+    border: 1px dashed var(--color-primary);
+    border-radius: 20px;
+    padding: 14px 20px;
+    margin-bottom: 25px;
+    color: var(--color-black);
+    font-size: 16px;
+    text-align: center;
+}
+
+.aviso-mesa i {
+    color: var(--color-primary);
+    font-size: 22px;
+}
+
+/* ---------- finalizar pedido ---------- */
+
+.obrigatorio {
+    font-size: 11px;
+    font-weight: normal;
+    color: var(--color-red);
+    background-color: rgba(231, 76, 60, 0.1);
+    border-radius: 10px;
+    padding: 2px 8px;
+    margin-left: 4px;
+    vertical-align: middle;
+}
+
+.tipos-pedido {
+    display: flex;
+    background-color: var(--color-white);
+    border-radius: 20px;
+    padding: 6px;
+    box-shadow: 0px 10px 15px -3px rgba(0,0,0,0.1);
+    max-width: 520px;
+}
+
+.tipo-pedido {
+    flex: 1;
+    text-align: center;
+    padding: 12px 10px;
+    border-radius: 16px;
+    cursor: pointer;
+    color: var(--color-text)!important;
+    font-size: 16px;
+    user-select: none;
+}
+
+.tipo-pedido.active {
+    background-color: var(--color-primary);
+    color: var(--color-white)!important;
+}
+
+.texto-info {
+    background-color: var(--color-secondary);
+    border-radius: 16px;
+    padding: 14px 20px;
+    color: var(--color-black);
+}
+
+.texto-info i {
+    color: var(--color-primary);
+    margin-right: 6px;
+}
+
+.formas-pagamento {
+    max-width: 620px;
+    margin-bottom: 20px;
+}
+
+.grupo-pagamento {
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--color-text-out);
+    margin: 15px 0 8px;
+}
+
+.opcao-pagamento {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    background-color: var(--color-white);
+    border: 2px solid transparent;
+    border-radius: 16px;
+    padding: 12px 18px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    box-shadow: 0px 6px 12px -4px rgba(0,0,0,0.1);
+}
+
+.opcao-pagamento.active {
+    border-color: var(--color-primary);
+    background-color: var(--color-secondary);
+}
+
+.opcao-pagamento input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--color-primary);
+}
+
+.opcao-pagamento span {
+    display: flex;
+    flex-direction: column;
+    color: var(--color-black);
+}
+
+.opcao-pagamento small {
+    color: var(--color-text-out);
+}
+
+.opcao-pagamento small:empty {
+    display: none;
+}
+
+textarea.form-control {
+    font-size: 16px;
+}
+
+/* ---------- Pix e confirmação ---------- */
+
+.pix-box {
+    background-color: var(--color-white);
+    border-radius: 20px;
+    padding: 25px;
+    margin-top: 25px;
+    text-align: center;
+    box-shadow: 0px 10px 15px -3px rgba(0,0,0,0.1);
+    color: var(--color-black);
+}
+
+.qr-pix canvas {
+    width: 220px;
+    max-width: 100%;
+    height: auto;
+    margin: 10px auto 15px;
+    display: block;
+}
+
+.pix-box textarea {
+    font-size: 12px!important;
+    word-break: break-all;
+    resize: none;
+}
+
+.aviso-pix {
+    font-size: 13px;
+    color: var(--color-text-out);
+}
+
+.pedido-enviado {
+    padding: 30px 0 10px;
+    color: var(--color-black);
+}
+
+.pedido-enviado > i {
+    font-size: 60px;
+    color: var(--color-green);
 }

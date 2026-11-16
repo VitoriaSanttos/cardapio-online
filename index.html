@@ -16,6 +16,10 @@
         <link rel="stylesheet" href="./css/main.css" />
         <link rel="stylesheet" href="./css/responsivo.css" />
 
+        <!-- dados da empresa: edite js/empresa.js -->
+        <script type="text/javascript" src="./js/empresa.js"></script>
+        <script type="text/javascript" src="./js/comum.js"></script>
+
     </head>
 
     <body>
@@ -42,7 +46,7 @@
                     </button>
                     <div class="collapse navbar-collapse" id="navbarNavDropdown">
                         <ul class="navbar-nav ml-auto mr-auto wow fadeIn">
-                            <li class="nav-item">
+                            <li class="nav-item nav-reservas">
                                 <a href="#reservas" class="nav-link"><b>Reservas</b></a>
                             </li>
                             <li class="nav-item">
@@ -51,7 +55,7 @@
                             <li class="nav-item">
                                 <a href="#cardapio" class="nav-link"><b>Cardápio</b></a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item nav-depoimentos">
                                 <a href="#depoimentos" class="nav-link"><b>Depoimentos</b></a>
                             </li>
                         </ul>
@@ -71,10 +75,8 @@
                 <div class="row">
                     <div class="col-12 col-lg-6 col-md-6 col-sm-12 col-one">
                         <div class="d-flex text-banner">
-                            <h1 class="wow fadeInLeft"><b>Escolha sua comida <b class="color-primary">favorita.</b></b></h1>
-                            <p class="wow fadeInLeft delay-02s">
-                                Aproveite nosso cardápio! Escolha o que desejar e recebe em sua casa de forma rápida e segura.
-                            </p>
+                            <h1 class="wow fadeInLeft"><b><span id="lblTituloSite"></span> <b class="color-primary" id="lblTituloDestaque"></b></b></h1>
+                            <p class="wow fadeInLeft delay-02s" id="lblDescricaoSite"></p>
                             <div class="wow fadeIn delay-05s">
                                 <a href="#cardapio" class="btn btn-yellow mt-4 mr-3">
                                     Ver cardápio
@@ -83,17 +85,17 @@
                                     <span class="icon-left">
                                         <i class="fa fa-phone"></i>
                                     </span>
-                                     (16)99361-4964
+                                    <span id="lblTelefone"></span>
                                 </a>
                             </div>
                         </div>
-                        <a href="https://www.instagram.com/" target="_blank" class="btn btn-sm btn-white btn-social mt-4 mr-3 wow fadeIn delay-05s">
+                        <a href="#" target="_blank" class="link-instagram btn btn-sm btn-white btn-social mt-4 mr-3 wow fadeIn delay-05s" title="Instagram">
                             <i class="fab fa-instagram"></i>
                         </a>
-                        <a href="https://www.facebook.com/" target="_blank" class="btn btn-sm btn-white btn-social mt-4 mr-3 wow fadeIn delay-05s">
+                        <a href="#" target="_blank" class="link-facebook btn btn-sm btn-white btn-social mt-4 mr-3 wow fadeIn delay-05s" title="Facebook">
                             <i class="fab fa-facebook-f"></i>
                         </a>
-                        <a class="btn btn-sm btn-white btn-social mt-4 wow fadeIn delay-05s">
+                        <a class="link-whatsapp btn btn-sm btn-white btn-social mt-4 wow fadeIn delay-05s" title="WhatsApp">
                             <i class="fab fa-whatsapp"></i>
                         </a>
                     </div>
@@ -101,14 +103,12 @@
                     <div class="col-6 no-mobile">
                         <div class="card-banner wow fadeIn delay-02s"></div>
                         <div class="d-flex img-banner wow fadeIn delay-05s">
-                            <img src="./img/burguer.png" alt="Hambúrguer artesanal" />
+                            <img src="./img/burguer.png" alt="" id="imgBanner" />
                         </div>
                         <div class="card card-case wow fadeInRight delay-07s">
-                            "Entrega rápida e funcionários simpáticos.
-                            <br>A comida chegou quente e <br>
-                            muito saborosa!"
+                            <span id="lblCardCaseTexto"></span>
                             <span class="card-case-name">
-                                <b>Thiago Lopes</b>
+                                <b id="lblCardCaseNome"></b>
                             </span>
                         </div>
                     </div>
@@ -184,25 +184,22 @@
                         </h1>
                     </div>
 
-                    <div class="col-12 col-one container-menu wow fadeInUp">
-                        <a id="menu-burgers" class="btn btn-white btn-sm mr-3 active" onclick="cardapio.metodos.obterItensCardapio('burgers')">
-                            <i class="fas fa-hamburger"></i>&nbsp; Burgers
-                        </a>
-                        <a id="menu-pizzas" class="btn btn-white btn-sm mr-3" onclick="cardapio.metodos.obterItensCardapio('pizzas')">
-                            <i class="fas fa-pizza-slice"></i>&nbsp; Pizzas
-                        </a>
-                        <a id="menu-churrasco" class="btn btn-white btn-sm mr-3" onclick="cardapio.metodos.obterItensCardapio('churrasco')">
-                            <i class="fas fa-drumstick-bite"></i>&nbsp; Churrasco
-                        </a>
-                        <a id="menu-steaks" class="btn btn-white btn-sm mr-3" onclick="cardapio.metodos.obterItensCardapio('steaks')">
-                            <i class="fas fa-bacon"></i>&nbsp; Steaks
-                        </a>
-                        <a id="menu-bebidas" class="btn btn-white btn-sm mr-3" onclick="cardapio.metodos.obterItensCardapio('bebidas')">
-                            <i class="fas fa-cocktail"></i>&nbsp; Bebidas
-                        </a>
-                        <a id="menu-sobremesas" class="btn btn-white btn-sm mr-3" onclick="cardapio.metodos.obterItensCardapio('sobremesas')">
-                            <i class="fas fa-ice-cream"></i>&nbsp; Sobremesas
-                        </a>
+                    <div class="col-12 col-one hidden" id="avisoMesa">
+                        <div class="aviso-mesa">
+                            <i class="fas fa-chair"></i>
+                            <span><b>Mesa <span id="lblNumeroMesa"></span></b> · escolha os itens e envie o pedido pelo WhatsApp</span>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-one mb-4">
+                        <div class="container-busca">
+                            <i class="fas fa-search"></i>
+                            <input id="txtBusca" type="search" class="form-control" placeholder="Buscar no cardápio" autocomplete="off" />
+                        </div>
+                    </div>
+
+                    <!-- categorias: configure em js/empresa.js -->
+                    <div class="col-12 col-one container-menu wow fadeInUp" id="menuCategorias">
                     </div>
 
                     <div class="col-12 col-one">
@@ -242,85 +239,10 @@
                         <h1 class="title wow fadeIn">
                             <b>O que dizem sobre nós?</b>
                         </h1>
-                        <div class="mb-5">
+                        <!-- depoimentos: configure em js/empresa.js -->
+                        <div class="mb-5" id="listaDepoimentos"></div>
 
-                            <div class="depoimento animated fadeIn" id="depoimento-1">
-                                <div class="container-dados-depoimento">
-                                    <div class="imagem-depoimento"></div>
-                                    <div>
-                                        <p class="nome-depoimento"><b>Diego Pereira</b></p>
-                                        <p class="nota-depoimento">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star-half-alt"></i>&nbsp; <span>4.5</span>
-                                        </p>
-                                    </div>
-                                </div>
-                                <p class="texto-depoimento">
-                                    <i class="fas fa-quote-left"></i>
-                                    <span>
-                                        Muito bom, recomendo demais! Comida muito bem feita pelo chefe, 
-                                        atendimento dentro dos parâmetros e boa comunicação com o cliente.
-                                    </span>
-                                    <i class="fas fa-quote-right"></i>
-                                </p>
-                            </div>
-
-                            <div class="depoimento animated fadeIn hidden" id="depoimento-2">
-                                <div class="container-dados-depoimento">
-                                    <div class="imagem-depoimento"></div>
-                                    <div>
-                                        <p class="nome-depoimento"><b>Ana Beatriz</b></p>
-                                        <p class="nota-depoimento">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>&nbsp; <span>5.0</span>
-                                        </p>
-                                    </div>
-                                </div>
-                                <p class="texto-depoimento">
-                                    <i class="fas fa-quote-left"></i>
-                                    <span>
-                                        Um jantar perfeito do começo ao fim. Comida, experiência, serviço...
-                                        foi tão maravilhoso que fomos dois dias seguidos - fato inédito para mim em uma viagem.
-                                    </span>
-                                    <i class="fas fa-quote-right"></i>
-                                </p>
-                            </div>
-
-                            <div class="depoimento animated fadeIn hidden" id="depoimento-3">
-                                <div class="container-dados-depoimento">
-                                    <div class="imagem-depoimento"></div>
-                                    <div>
-                                        <p class="nome-depoimento"><b>João Guilherme</b></p>
-                                        <p class="nota-depoimento">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="far fa-star"></i>&nbsp; <span>4.0</span>
-                                        </p>
-                                    </div>
-                                </div>
-                                <p class="texto-depoimento">
-                                    <i class="fas fa-quote-left"></i>
-                                    <span>
-                                        A comida estava excelente e o serviço gentil nos surpreendeu!
-                                        Dica: reserve umas 3 horas para ter uma experiência incrível.
-                                    </span>
-                                    <i class="fas fa-quote-right"></i>
-                                </p>
-                            </div>
-
-                        </div>
-                        
-                        <a id="btnDepoimento-1" class="btn btn-sm btn-white btn-social wow fadeIn mr-3 active" onclick="cardapio.metodos.abrirDepoimento(1)">1</a>
-                        <a id="btnDepoimento-2" class="btn btn-sm btn-white btn-social wow fadeIn mr-3" onclick="cardapio.metodos.abrirDepoimento(2)">2</a>
-                        <a id="btnDepoimento-3" class="btn btn-sm btn-white btn-social wow fadeIn" onclick="cardapio.metodos.abrirDepoimento(3)">3</a>
+                        <div id="botoesDepoimentos"></div>
 
                     </div>
 
@@ -378,18 +300,18 @@
 
                     <div class="col-12 col-lg-6 col-md-6 col-sm-12 col-one container-texto-footer wow fadeIn">
                         <p class="mb-0">
-                            <b>Menu On-line</b> &copy; Todos os direitos reservados
+                            <b class="lbl-nome-empresa"></b> &copy; Todos os direitos reservados
                         </p>
                     </div>
 
                     <div class="col-12 col-lg-3 col-md-3 col-sm-12 col-one container-redes-footer wow fadeIn">
-                        <a href="https://www.instagram.com/" class="btn btn-sm btn-white btn-social mr-3">
+                        <a href="#" target="_blank" class="link-instagram btn btn-sm btn-white btn-social mr-3" title="Instagram">
                             <i class="fab fa-instagram"></i>
                         </a>
-                        <a href="https://www.facebook.com/" target="_blank" class="btn btn-sm btn-white btn-social mr-3">
+                        <a href="#" target="_blank" class="link-facebook btn btn-sm btn-white btn-social mr-3" title="Facebook">
                             <i class="fab fa-facebook-f"></i>
                         </a>
-                        <a class="btn btn-sm btn-white btn-social">
+                        <a class="link-whatsapp btn btn-sm btn-white btn-social" title="WhatsApp">
                             <i class="fab fa-whatsapp"></i>
                         </a>
                     </div>
@@ -424,7 +346,34 @@
 
                     </div>
 
-                    <div id="localEntrega" class="row mr-0 ml-0 animated fadeIn hidden">
+                    <div id="finalizarPedido" class="row mr-0 ml-0 animated fadeIn hidden">
+
+                        <div class="col-12 mb-4">
+                            <div class="tipos-pedido" id="tiposPedido"></div>
+                        </div>
+
+                        <div class="col-12 col-lg-6 col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <label>Seu nome: <span class="obrigatorio">obrigatório</span></label>
+                                <input id="txtNome" type="text" class="form-control" autocomplete="name" maxlength="60" />
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-lg-3 col-md-3 col-sm-12 campo-mesa hidden">
+                            <div class="form-group">
+                                <label>Número da mesa: <span class="obrigatorio">obrigatório</span></label>
+                                <input id="txtMesa" type="number" min="1" class="form-control" inputmode="numeric" />
+                            </div>
+                        </div>
+
+                        <div class="col-12 campo-retirada info-retirada hidden">
+                            <p class="texto-info">
+                                <i class="fas fa-store"></i> Retire seu pedido em: <b id="lblEnderecoLoja"></b>
+                            </p>
+                        </div>
+
+                        <div class="col-12 campos-entrega hidden">
+                        <div class="row">
 
                         <div class="col-12 col-lg-4 col-md-4 col-sm-12">
                             <div class="form-group container-cep">
@@ -511,6 +460,31 @@
 
                     </div>
 
+                        </div>
+
+                        <div class="col-12">
+                            <p class="title-carrinho mt-2 mb-2">
+                                <b>Pagamento:</b> <span class="obrigatorio">obrigatório</span>
+                            </p>
+                            <div id="formasPagamento" class="formas-pagamento"></div>
+                        </div>
+
+                        <div class="col-12 col-lg-4 col-md-4 col-sm-12 campo-troco hidden">
+                            <div class="form-group">
+                                <label>Troco para quanto?</label>
+                                <input id="txtTroco" type="text" class="form-control" inputmode="decimal" placeholder="Ex.: 100,00 (deixe vazio se não precisar)" />
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label>Observações do pedido:</label>
+                                <textarea id="txtObservacao" class="form-control" rows="2" maxlength="300" placeholder="Ex.: sem cebola, tocar o interfone..."></textarea>
+                            </div>
+                        </div>
+
+                    </div>
+
                     <div id="resumoCarrinho" class="row mr-0 ml-0 animated fadeIn hidden">
                         <div class="col-12">
                             <p class="title-carrinho mt-4">
@@ -526,13 +500,13 @@
 
                         <div class="col-12">
                             <p class="title-carrinho mt-4">
-                                <b>Local da entrega:</b>
+                                <b id="lblTituloLocal">Local da entrega:</b>
                             </p>
                         </div>
 
                         <div class="col-12 item-carrinho resumo">
                             <div class="img-map">
-                                <i class="fas fa-map-marked-alt"></i>
+                                <i id="iconeLocal" class="fas fa-map-marked-alt"></i>
                             </div>
                             <div class="dados-produto">
                                 <p class="texto-endereco">
@@ -542,6 +516,58 @@
                             </div>
                         </div>
 
+                        <div class="col-12" id="blocoPagamento">
+                            <p class="title-carrinho mt-4">
+                                <b>Pagamento:</b>
+                            </p>
+                            <div class="item-carrinho resumo ml-0">
+                                <div class="img-map">
+                                    <i class="fas fa-wallet"></i>
+                                </div>
+                                <div class="dados-produto">
+                                    <p class="texto-endereco"><b id="resumoPagamento"></b></p>
+                                    <p class="cidade-endereco" id="resumoObservacao"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 hidden" id="areaPix">
+                            <div class="pix-box">
+                                <p class="mb-1"><b>Pague com Pix</b></p>
+                                <p class="mb-2">Valor: <b id="lblValorPix"></b></p>
+                                <p class="aviso-pix" id="lblAvisoPixEntrega">A taxa de entrega será combinada pelo WhatsApp.</p>
+                                <div id="qrPix" class="qr-pix"></div>
+                                <textarea id="txtPixCopiaECola" class="form-control" rows="3" readonly></textarea>
+                                <a class="btn btn-white btn-sm mt-3" onclick="cardapio.metodos.copiarPix()">
+                                    <i class="fas fa-copy"></i>&nbsp; Copiar código Pix
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="col-12 hidden" id="areaCartao">
+                            <div class="pix-box">
+                                <p class="mb-2"><b>Pague com cartão</b></p>
+                                <a class="btn btn-white btn-sm" target="_blank" id="btnPagarCartao">
+                                    <i class="fas fa-credit-card"></i>&nbsp; Abrir link de pagamento
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div id="pedidoEnviado" class="row mr-0 ml-0 animated fadeIn hidden">
+                        <div class="col-12 text-center pedido-enviado">
+                            <i class="fas fa-check-circle"></i>
+                            <p class="title-carrinho mt-3 mb-1"><b>Falta só um toque!</b></p>
+                            <p>
+                                Abrimos o WhatsApp com o seu pedido <b id="lblCodigoPedido"></b> pronto.<br>
+                                Toque em <b>enviar</b> na conversa para a loja receber.
+                            </p>
+                            <a class="btn btn-white btn-sm" target="_blank" id="btnReabrirWhatsapp">
+                                <i class="fab fa-whatsapp"></i>&nbsp; Abrir o WhatsApp de novo
+                            </a>
+                        </div>
+                        <div class="col-12 area-pagamento"></div>
                     </div>
 
                 </div>
@@ -570,8 +596,11 @@
                     <a onclick="cardapio.metodos.resumoPedido()" class="btn btn-yellow float-right hidden" id="btnEtapaEndereco">
                         Revisar pedido
                     </a>
-                    <a href="#" class="btn btn-yellow float-right hidden" id="btnEtapaResumo" target="_blank">
-                        Enviar pedido
+                    <a href="#" class="btn btn-yellow float-right hidden" id="btnEtapaResumo" target="_blank" onclick="cardapio.metodos.pedidoEnviado()">
+                        <i class="fab fa-whatsapp"></i>&nbsp; Enviar pedido
+                    </a>
+                    <a class="btn btn-yellow float-right hidden" id="btnNovoPedido" onclick="cardapio.metodos.novoPedido()">
+                        Fazer um novo pedido
                     </a>
 
                     <a onclick="cardapio.metodos.voltarEtapa()" class="btn btn-white float-right mr-3 hidden" id="btnVoltar">
@@ -590,6 +619,7 @@
         <script type="text/javascript" src="./js/bootstrap.min.js"></script>
         <script type="text/javascript" src="./js/popper.min.js"></script>
         <script type="text/javascript" src="./js/wow.min.js"></script>
+        <script type="text/javascript" src="./js/qrcode.js"></script>
         <script type="text/javascript" src="./js/dados.js"></script>
         <script type="text/javascript" src="./js/app.js"></script>
 

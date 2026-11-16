@@ -1,0 +1,168 @@
+@font-face {
+    font-family: 'PoppinsMedium';
+    src: url('../fonts/Poppins-Medium.otf');
+}
+
+@font-face {
+    font-family: 'PoppinsRegular';
+    src: url('../fonts/Poppins-Regular.otf');
+}
+
+/* as cores são trocadas por js/empresa.js */
+:root {
+    --color-background: #fffdf7;
+    --color-black: #212121;
+    --color-text: #4f4f4f;
+    --color-text-out: #90908e;
+    --color-primary: #ffbf00;
+    --color-secondary: #fff2cc;
+    --color-white: #ffffff;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    min-height: 100%;
+    font-family: 'PoppinsRegular', sans-serif;
+    background-color: var(--color-background);
+    color: var(--color-text);
+}
+
+b {
+    font-family: 'PoppinsMedium', sans-serif;
+    font-weight: normal;
+}
+
+.bio {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 40px 16px 30px;
+}
+
+.bio-topo {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.bio-logo {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 16px;
+    border-radius: 50%;
+    background-color: var(--color-white);
+    border: 6px solid var(--color-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-shadow: 0 10px 25px -8px rgba(0, 0, 0, 0.2);
+}
+
+.bio-logo img {
+    width: 85%;
+    height: 85%;
+    object-fit: contain;
+}
+
+.bio-topo h1 {
+    font-family: 'PoppinsMedium', sans-serif;
+    font-weight: normal;
+    color: var(--color-black);
+    font-size: 26px;
+    margin: 0;
+}
+
+.bio-slogan {
+    margin: 2px 0 10px;
+    color: var(--color-primary);
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+.bio-descricao {
+    margin: 0;
+    font-size: 15px;
+}
+
+.bio-links {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.bio-link {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    background-color: var(--color-white);
+    border-radius: 18px;
+    text-decoration: none;
+    color: var(--color-black);
+    box-shadow: 0 8px 15px -6px rgba(0, 0, 0, 0.12);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.bio-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 20px -6px rgba(0, 0, 0, 0.18);
+}
+
+.bio-icone {
+    flex: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background-color: var(--color-secondary);
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.bio-texto {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.bio-texto small {
+    color: var(--color-text-out);
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.bio-seta {
+    color: var(--color-text-out);
+    font-size: 12px;
+}
+
+.bio-link.destaque {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+}
+
+.bio-link.destaque .bio-icone {
+    background-color: rgba(255, 255, 255, 0.25);
+    color: var(--color-white);
+}
+
+.bio-link.destaque small,
+.bio-link.destaque .bio-seta {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.bio-rodape {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 12px;
+    color: var(--color-text-out);
+}

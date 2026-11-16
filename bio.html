@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="Cardápio, pedidos, WhatsApp e localização." />
+        <title>Link da bio</title>
+
+        <link rel="stylesheet" href="./css/fontawesome.css" />
+        <link rel="stylesheet" href="./css/bio.css" />
+
+        <!-- dados da empresa: edite js/empresa.js -->
+        <script type="text/javascript" src="./js/empresa.js"></script>
+        <script type="text/javascript" src="./js/comum.js"></script>
+    </head>
+
+    <body>
+
+        <main class="bio">
+
+            <header class="bio-topo">
+                <div class="bio-logo">
+                    <img id="imgLogo" src="" alt="" />
+                </div>
+                <h1 id="lblNome"></h1>
+                <p class="bio-slogan" id="lblSlogan"></p>
+                <p class="bio-descricao" id="lblDescricao"></p>
+            </header>
+
+            <nav class="bio-links" id="listaLinks"></nav>
+
+            <footer class="bio-rodape">
+                <span id="lblRodape"></span>
+            </footer>
+
+        </main>
+
+        <script type="text/javascript">
+
+            (function () {
+
+                var esc = COMUM.escapar;
+
+                document.title = EMPRESA.nome + ' - Links';
+                document.getElementById('imgLogo').src = EMPRESA.logo;
+                document.getElementById('imgLogo').alt = EMPRESA.nome;
+                document.getElementById('lblNome').textContent = EMPRESA.nome;
+                document.getElementById('lblSlogan').textContent = EMPRESA.slogan || '';
+                document.getElementById('lblDescricao').textContent = EMPRESA.descricaoBio || '';
+                document.getElementById('lblRodape').textContent = EMPRESA.nome + ' © ' + new Date().getFullYear();
+
+                var links = [];
+
+                // botão principal: cardápio e pedidos
+                links.push({
+                    titulo: 'Cardápio e pedidos',
+                    subtitulo: 'Peça para retirar, receber em casa ou na mesa',
+                    icone: 'fas fa-utensils',
+                    url: './index.html#cardapio',
+                    destaque: true
+                });
+
+                if (EMPRESA.whatsapp) {
+                    links.push({
+                        titulo: 'Falar no WhatsApp',
+                        subtitulo: EMPRESA.telefoneExibicao || '',
+                        icone: 'fab fa-whatsapp',
+                        url: COMUM.linkWhatsApp()
+                    });
+                }
+
+                // botões extras configurados em js/empresa.js
+                (EMPRESA.linksBio || []).forEach(function (link) {
+                    links.push({
+                        titulo: link.titulo,
+                        subtitulo: link.subtitulo || '',
+                        icone: link.icone || 'fas fa-link',
+                        url: link.url || COMUM.linkWhatsApp(link.mensagem || '')
+                    });
+                });
+
+                if (COMUM.linkMapa()) {
+                    links.push({
+                        titulo: 'Como chegar',
+                        subtitulo: EMPRESA.endereco || '',
+                        icone: 'fas fa-map-marker-alt',
+                        url: COMUM.linkMapa()
+                    });
+                }
+
+                if (EMPRESA.instagram) {
+
+                    // https://www.instagram.com/minhaloja/ => @minhaloja
+                    var perfil = EMPRESA.instagram.replace(/^https?:\/\/[^/]+\/?/, '').split(/[/?#]/)[0];
+
+                    links.push({
+                        titulo: 'Instagram',
+                        subtitulo: perfil ? '@' + perfil : '',
+                        icone: 'fab fa-instagram',
+                        url: EMPRESA.instagram
+                    });
+                }
+
+                if (EMPRESA.facebook) {
+                    links.push({
+                        titulo: 'Facebook',
+                        subtitulo: '',
+                        icone: 'fab fa-facebook-f',
+                        url: EMPRESA.facebook
+                    });
+                }
+
+                document.getElementById('listaLinks').innerHTML = links.map(function (link) {
+
+                    // o cardápio abre na mesma aba; os outros links em uma nova
+                    var externo = link.url.indexOf('http') === 0;
+
+                    return '<a class="bio-link' + (link.destaque ? ' destaque' : '') + '" href="' + esc(link.url) + '"' +
+                        (externo ? ' target="_blank" rel="noopener"' : '') + '>' +
+                        '<span class="bio-icone"><i class="' + esc(link.icone) + '"></i></span>' +
+                        '<span class="bio-texto"><b>' + esc(link.titulo) + '</b>' +
+                        (link.subtitulo ? '<small>' + esc(link.subtitulo) + '</small>' : '') + '</span>' +
+                        '<i class="fas fa-chevron-right bio-seta"></i>' +
+                        '</a>';
+
+                }).join('');
+
+            })();
+
+        </script>
+
+    </body>
+
+</html>

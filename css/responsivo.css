@@ -197,3 +197,25 @@
     }
 
 }
+/* novos elementos do pedido no celular */
+@media (max-width: 767px) {
+
+    /* o card do celular é compacto: só nome, preço e botões */
+    .card-item .dsc-produto {
+        display: none;
+    }
+
+    .tipo-pedido {
+        font-size: 14px;
+        padding: 10px 4px;
+    }
+
+    .aviso-mesa {
+        font-size: 14px;
+    }
+
+    .pix-box {
+        padding: 20px 15px;
+    }
+
+}
