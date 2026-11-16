@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 60" role="img" aria-label="Menu On-line">
+  <circle cx="30" cy="30" r="26" fill="#ffbf00"/>
+  <path d="M17 34h26a13 13 0 0 0-26 0z" fill="#fff"/>
+  <rect x="14" y="36" width="32" height="4" rx="2" fill="#fff"/>
+  <circle cx="30" cy="19" r="2.5" fill="#fff"/>
+  <text x="66" y="28" font-family="Poppins, Arial, sans-serif" font-size="20" font-weight="700" fill="#212121">Menu</text>
+  <text x="66" y="48" font-family="Poppins, Arial, sans-serif" font-size="16" font-weight="500" fill="#ffbf00">On-line</text>
+</svg>

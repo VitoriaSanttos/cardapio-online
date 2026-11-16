@@ -1,10 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 
     <head>
         <meta charset="UTF-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="Cardápio on-line: escolha seus pratos, monte o carrinho e envie o pedido direto pelo WhatsApp." />
+        <meta name="theme-color" content="#ffbf00" />
+        <link rel="icon" href="./img/logo.svg" type="image/svg+xml" />
         <title>Restaurante - Seja bem-vindo!</title>
 
         <link rel="stylesheet" href="./css/bootstrap.min.css" />
@@ -30,7 +33,7 @@
             <div class="container">
                 <nav class="navbar navbar-expand-lg pl-0 pr-0 col-one">
                     <a class="navbar-brand wow fadeIn" href="#">
-                        <img src="./img/logo.png" width="160" class="img-logo" />
+                        <img src="./img/logo.svg" width="160" class="img-logo" alt="Menu On-line" />
                     </a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown">
                         <span class="navbar-toggler-icon">
@@ -98,7 +101,7 @@
                     <div class="col-6 no-mobile">
                         <div class="card-banner wow fadeIn delay-02s"></div>
                         <div class="d-flex img-banner wow fadeIn delay-05s">
-                            <img src="./img/burguer.png" />
+                            <img src="./img/burguer.png" alt="Hambúrguer artesanal" />
                         </div>
                         <div class="card card-case wow fadeInRight delay-07s">
                             "Entrega rápida e funcionários simpáticos.
@@ -129,7 +132,7 @@
 
                     <div class="col-12 col-lg-4 col-md-4 col-sm-12 col-one mb-5 wow fadeInUp">
                         <div class="card-icon text-center">
-                            <img src="./img/icone-pedido.svg" width="150" />
+                            <img src="./img/icone-pedido.svg" width="150" alt="" />
                         </div>
                         <div class="card-text text-center mt-3">
                             <p><b>Fácil de pedir</b></p>
@@ -141,7 +144,7 @@
 
                     <div class="col-12 col-lg-4 col-md-4 col-sm-12 col-one mb-5 wow fadeInUp">
                         <div class="card-icon text-center">
-                            <img src="./img/icone-delivery.svg" width="250" />
+                            <img src="./img/icone-delivery.svg" width="250" alt="" />
                         </div>
                         <div class="card-text text-center mt-3">
                             <p><b>Entrega rápida</b></p>
@@ -153,7 +156,7 @@
 
                     <div class="col-12 col-lg-4 col-md-4 col-sm-12 col-one mb-5 wow fadeInUp">
                         <div class="card-icon text-center">
-                            <img src="./img/icone-qualidade.svg" width="250" />
+                            <img src="./img/icone-qualidade.svg" width="250" alt="" />
                         </div>
                         <div class="card-text text-center mt-3">
                             <p><b>Melhor qualidade</b></p>
@@ -230,7 +233,7 @@
                     <div class="col-5 no-mobile text-center">
                         <div class="card-depoimentos wow fadeIn"></div>
                         <div class="d-flex img-banner wow fadeInLeft delay-02s">
-                            <img src="./img/pizzas.png" />
+                            <img src="./img/cardapio/pizzas/wood-fired-pizzas-best-seller-4-pack.1653bb05922ba153ac178f8365d27f6d.jpg" class="img-pizzas" alt="Pizzas assadas no forno a lenha" />
                         </div>
                     </div>
 
@@ -352,7 +355,7 @@
                                 <div class="col-5 no-mobile">
                                     <div class="card-reserva"></div>
                                     <div class="d-flex img-banner">
-                                        <img src="./img/icone-reserva.svg" />
+                                        <img src="./img/icone-reserva.svg" alt="" />
                                     </div>
                                 </div>
 
@@ -370,7 +373,7 @@
                 <div class="row">
 
                     <div class="col-12 col-lg-3 col-md-3 col-sm-12 col-one container-logo-footer wow fadeIn">
-                        <img class="logo-footer" src="./img/logo.png" />
+                        <img class="logo-footer" src="./img/logo.svg" alt="Menu On-line" />
                     </div>
 
                     <div class="col-12 col-lg-6 col-md-6 col-sm-12 col-one container-texto-footer wow fadeIn">
@@ -426,8 +429,8 @@
                         <div class="col-12 col-lg-4 col-md-4 col-sm-12">
                             <div class="form-group container-cep">
                                 <label>CEP:</label>
-                                <input id="txtCEP" type="text" class="form-control" />
-                                <a class="btn btn-yellow btn-sm" onclick="cardapio.metodos.buscarCep()">
+                                <input id="txtCEP" type="text" class="form-control" inputmode="numeric" maxlength="9" placeholder="00000-000" autocomplete="postal-code" />
+                                <a class="btn btn-yellow btn-sm" onclick="cardapio.metodos.buscarCep()" title="Buscar CEP">
                                     <i class="fa fa-search"></i>
                                 </a>
                             </div>
@@ -452,7 +455,7 @@
                         <div class="col-12 col-lg-2 col-md-2 col-sm-12">
                             <div class="form-group">
                                 <label>Número:</label>
-                                <input id="txtNumero" type="text" class="form-control" />
+                                <input id="txtNumero" type="text" class="form-control" inputmode="numeric" />
                             </div>
                         </div>
 

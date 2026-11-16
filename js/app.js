@@ -10,14 +10,50 @@ var MEU_ENDERECO = null;
 var VALOR_CARRINHO = 0;
 var VALOR_ENTREGA = 7.5;
 
-var CELULAR_EMPRESA = '55316993614964';
+var CELULAR_EMPRESA = '5516993614964';
+
+var ITENS_POR_PAGINA = 8;
+var CHAVE_STORAGE = 'cardapio-carrinho';
+var IMAGEM_PADRAO = './img/sem-imagem.svg';
 
 cardapio.eventos = {
 
     init: () => {
+        cardapio.metodos.carregarCarrinhoSalvo();
         cardapio.metodos.obterItensCardapio();
         cardapio.metodos.carregarBotaoLigar();
         cardapio.metodos.carregarBotaoReserva();
+
+        // fecha o carrinho com a tecla ESC
+        $(document).on('keydown', (e) => {
+            if (e.key === 'Escape' && !$("#modalCarrinho").hasClass('hidden')) {
+                cardapio.metodos.abrirCarrinho(false);
+            }
+        });
+
+        // máscara do CEP (00000-000) e busca automática ao completar
+        $("#txtCEP").on('input', function () {
+            let cep = $(this).val().replace(/\D/g, '').substring(0, 8);
+            $(this).val(cep.length > 5 ? cep.substring(0, 5) + '-' + cep.substring(5) : cep);
+
+            if (cep.length == 8) {
+                cardapio.metodos.buscarCep();
+            }
+        });
+
+        $("#txtCEP").on('keydown', (e) => {
+            if (e.key === 'Enter') {
+                cardapio.metodos.buscarCep();
+            }
+        });
+
+        // imagem padrão para itens sem foto
+        document.addEventListener('error', (e) => {
+            let img = e.target;
+            if (img.tagName === 'IMG' && !img.src.endsWith(IMAGEM_PADRAO.substring(1))) {
+                img.src = IMAGEM_PADRAO;
+            }
+        }, true);
     }
 
 }
@@ -28,11 +64,13 @@ cardapio.metodos = {
     obterItensCardapio: (categoria = 'burgers', vermais = false) => {
 
         var filtro = MENU[categoria];
-        console.log(filtro);
+
+        // quantidade de itens que já estão na tela
+        var exibidos = vermais ? $("#itensCardapio .card-item").length : 0;
+        var limite = exibidos + ITENS_POR_PAGINA;
 
         if (!vermais) {
             $("#itensCardapio").html('');
-            $("#btnVerMais").removeClass('hidden');
         }
 
         $.each(filtro, (i, e) => {
@@ -42,17 +80,15 @@ cardapio.metodos = {
             .replace(/\${preco}/g, e.price.toFixed(2).replace('.', ','))
             .replace(/\${id}/g, e.id)
 
-            // botão ver mais foi clicado (12 itens)
-            if (vermais && i >= 8 && i < 12) {
-                $("#itensCardapio").append(temp)
-            }
-
-            // paginação inicial (8 itens)
-            if (!vermais && i < 8) {
+            // exibe a próxima página de itens
+            if (i >= exibidos && i < limite) {
                 $("#itensCardapio").append(temp)
             }
 
         })
+
+        // só mostra o "Ver mais" se ainda existirem itens para exibir
+        $("#btnVerMais").toggleClass('hidden', filtro.length <= limite);
 
         // remove o ativo
         $(".container-menu a").removeClass('active');
@@ -67,8 +103,6 @@ cardapio.metodos = {
 
         var ativo = $(".container-menu a.active").attr('id').split('menu-')[1];
         cardapio.metodos.obterItensCardapio(ativo, true);
-
-        $("#btnVerMais").addClass('hidden');
 
     },
 
@@ -119,10 +153,11 @@ cardapio.metodos = {
                 }
                 // caso ainda não exista o item no carrinho, adiciona ele 
                 else {
-                    item[0].qntd = qntdAtual;
-                    MEU_CARRINHO.push(item[0])
-                }      
-                
+                    // copia o item para não alterar os dados do cardápio
+                    MEU_CARRINHO.push($.extend({}, item[0], { qntd: qntdAtual }))
+                }
+
+                cardapio.metodos.salvarCarrinho();
                 cardapio.metodos.mensagem('Item adicionado ao carrinho', 'green')
                 $("#qntd-" + id).text(0);
 
@@ -156,15 +191,40 @@ cardapio.metodos = {
 
     },
 
+    // salva o carrinho no navegador para não perder ao recarregar a página
+    salvarCarrinho: () => {
+
+        try {
+            localStorage.setItem(CHAVE_STORAGE, JSON.stringify(MEU_CARRINHO));
+        } catch (e) { }
+
+    },
+
+    // recupera o carrinho salvo no navegador
+    carregarCarrinhoSalvo: () => {
+
+        try {
+            let salvo = JSON.parse(localStorage.getItem(CHAVE_STORAGE));
+            if ($.isArray(salvo)) {
+                MEU_CARRINHO = salvo.filter((e) => e && e.id && e.qntd > 0);
+            }
+        } catch (e) { }
+
+        cardapio.metodos.atualizarBadgeTotal();
+
+    },
+
     // abrir a modal de carrinho
     abrirCarrinho: (abrir) => {
 
         if (abrir) {
             $("#modalCarrinho").removeClass('hidden');
+            $("body").css('overflow', 'hidden');
             cardapio.metodos.carregarCarrinho();
         }
         else {
             $("#modalCarrinho").addClass('hidden');
+            $("body").css('overflow', '');
         }
 
     },
@@ -292,6 +352,7 @@ cardapio.metodos = {
     removerItemCarrinho: (id) => {
 
         MEU_CARRINHO = $.grep(MEU_CARRINHO, (e, i) => { return e.id != id });
+        cardapio.metodos.salvarCarrinho();
         cardapio.metodos.carregarCarrinho();
 
         // atualiza o botão carrinho com a quantidade atualizada
@@ -304,6 +365,7 @@ cardapio.metodos = {
 
         let objIndex = MEU_CARRINHO.findIndex((obj => obj.id == id));
         MEU_CARRINHO[objIndex].qntd = qntd;
+        cardapio.metodos.salvarCarrinho();
 
         // atualiza o botão carrinho com a quantidade atualizada
         cardapio.metodos.atualizarBadgeTotal();
@@ -362,7 +424,11 @@ cardapio.metodos = {
 
             if (validacep.test(cep)) {
 
-                $.getJSON("https://viacep.com.br/ws/" + cep + "/json/?callback=?", function (dados) {
+                $.ajax({
+                    url: "https://viacep.com.br/ws/" + cep + "/json/?callback=?",
+                    dataType: 'jsonp',
+                    timeout: 8000
+                }).done(function (dados) {
 
                     if (!("erro" in dados)) {
 
@@ -379,6 +445,9 @@ cardapio.metodos = {
                         $("#txtEndereco").focus();
                     }
 
+                }).fail(function () {
+                    cardapio.metodos.mensagem('Não foi possível buscar o CEP. Preencha as informações manualmente.');
+                    $("#txtEndereco").focus();
                 })
 
             }
@@ -504,7 +573,7 @@ cardapio.metodos = {
                     texto = texto.replace(/\${itens}/g, itens);
 
                     // converte a URL
-                    let encode = encodeURI(texto);
+                    let encode = encodeURIComponent(texto);
                     let URL = `https://wa.me/${CELULAR_EMPRESA}?text=${encode}`;
 
                     $("#btnEtapaResumo").attr('href', URL);
@@ -522,8 +591,8 @@ cardapio.metodos = {
 
         var texto = 'Olá! gostaria de fazer uma *reserva*';
 
-        let encode = encodeURI(texto);
-        let URL = `https://wa.me/5516993614964`;
+        let encode = encodeURIComponent(texto);
+        let URL = `https://wa.me/${CELULAR_EMPRESA}?text=${encode}`;
 
         $("#btnReserva").attr('href', URL);
 
@@ -532,7 +601,7 @@ cardapio.metodos = {
     // carrega o botão de ligar
     carregarBotaoLigar: () => {
 
-        $("#btnLigar").attr('href', `tel:${CELULAR_EMPRESA}`);
+        $("#btnLigar").attr('href', `tel:+${CELULAR_EMPRESA}`);
 
     },
 
@@ -579,7 +648,7 @@ cardapio.templates = {
         <div class="col-12 col-lg-3 col-md-3 col-sm-6 mb-5 animated fadeInUp">
             <div class="card card-item" id="\${id}">
                 <div class="img-produto">
-                    <img src="\${img}" />
+                    <img src="\${img}" alt="\${nome}" loading="lazy" />
                 </div>
                 <p class="title-produto text-center mt-4">
                     <b>\${nome}</b>
@@ -600,7 +669,7 @@ cardapio.templates = {
     itemCarrinho: `
         <div class="col-12 item-carrinho">
             <div class="img-produto">
-                <img src="\${img}" />
+                <img src="\${img}" alt="\${nome}" loading="lazy" />
             </div>
             <div class="dados-produto">
                 <p class="title-produto"><b>\${nome}</b></p>
@@ -618,7 +687,7 @@ cardapio.templates = {
     itemResumo: `
         <div class="col-12 item-carrinho resumo">
             <div class="img-produto-resumo">
-                <img src="\${img}" />
+                <img src="\${img}" alt="\${nome}" loading="lazy" />
             </div>
             <div class="dados-produto">
                 <p class="title-produto-resumo">
