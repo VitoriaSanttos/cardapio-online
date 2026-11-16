@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="robots" content="noindex" />
+        <title>QR codes das mesas</title>
+
+        <link rel="stylesheet" href="./css/fontawesome.css" />
+        <link rel="stylesheet" href="./css/qrcodes.css" />
+
+        <!-- dados da empresa: edite js/empresa.js -->
+        <script type="text/javascript" src="./js/empresa.js"></script>
+        <script type="text/javascript" src="./js/comum.js"></script>
+        <script type="text/javascript" src="./js/config.js"></script>
+        <script type="text/javascript" src="./js/loja.js"></script>
+        <script type="text/javascript" src="./js/supabase.js"></script>
+        <script type="text/javascript" src="./js/qrcode.js"></script>
+    </head>
+
+    <body>
+
+        <section class="painel nao-imprimir">
+            <h1><i class="fas fa-qrcode"></i> QR codes</h1>
+            <p>
+                Cada mesa ganha o seu QR code: o cliente aponta a câmera, vê o cardápio e o pedido já chega
+                com o número da mesa. Se o cardápio mudar, os QR codes continuam os mesmos.
+            </p>
+
+            <div class="campos">
+                <label>
+                    Da mesa
+                    <input type="number" id="txtMesaInicial" min="1" value="1" />
+                </label>
+                <label>
+                    até a mesa
+                    <input type="number" id="txtMesaFinal" min="1" value="1" />
+                </label>
+                <label class="checkbox">
+                    <input type="checkbox" id="chkGeral" checked />
+                    QR geral (balcão, vitrine e stories)
+                </label>
+                <label class="checkbox">
+                    <input type="checkbox" id="chkBio" />
+                    QR do link da bio
+                </label>
+            </div>
+
+            <div class="acoes">
+                <button type="button" class="botao" onclick="QRCODES.gerar()"><i class="fas fa-sync-alt"></i> Atualizar</button>
+                <button type="button" class="botao principal" onclick="window.print()"><i class="fas fa-print"></i> Imprimir (4 por folha A4)</button>
+            </div>
+
+            <p class="endereco">Endereço usado nos QR codes: <b id="lblUrlBase"></b></p>
+            <p class="alerta hidden" id="alertaUrl">
+                <i class="fas fa-exclamation-triangle"></i>
+                Este endereço não funciona no celular dos clientes. Coloque o endereço do site publicado em
+                <b>urlSite</b>, no arquivo <b>js/empresa.js</b>, antes de imprimir.
+            </p>
+        </section>
+
+        <main id="folhas"></main>
+
+        <script type="text/javascript">
+
+            var QRCODES = {
+
+                // monta a lista de cartões (geral, bio e mesas)
+                cartoes: () => {
+
+                    var base = COMUM.urlBase();
+                    var lista = [];
+                    var inicial = parseInt(document.getElementById('txtMesaInicial').value, 10) || 1;
+                    var final = parseInt(document.getElementById('txtMesaFinal').value, 10) || inicial;
+
+                    if (document.getElementById('chkGeral').checked) {
+                        lista.push({
+                            titulo: 'Cardápio online',
+                            texto: 'Aponte a câmera do celular para ver o cardápio e fazer seu pedido.',
+                            url: base + LOJA.link('index.html'),
+                            arquivo: 'qrcode-cardapio'
+                        });
+                    }
+
+                    if (document.getElementById('chkBio').checked) {
+                        lista.push({
+                            titulo: 'Nossos links',
+                            texto: 'Cardápio, WhatsApp, localização e redes sociais.',
+                            url: base + LOJA.link('bio.html'),
+                            arquivo: 'qrcode-link-da-bio'
+                        });
+                    }
+
+                    if ((EMPRESA.pedido || {}).mesa) {
+                        for (var mesa = inicial; mesa <= final && mesa < inicial + 200; mesa++) {
+                            lista.push({
+                                titulo: 'MESA ' + mesa,
+                                texto: 'Aponte a câmera do celular, escolha os itens e envie o pedido pelo WhatsApp.',
+                                url: base + LOJA.link('index.html', { mesa: mesa }),
+                                arquivo: 'qrcode-mesa-' + mesa,
+                                mesa: true
+                            });
+                        }
+                    }
+
+                    return lista;
+
+                },
+
+                gerar: () => {
+
+                    var base = COMUM.urlBase();
+                    var local = /^file:|\/\/(localhost|127\.0\.0\.1)/.test(base);
+
+                    document.getElementById('lblUrlBase').textContent = base;
+                    document.getElementById('alertaUrl').classList.toggle('hidden', !local);
+
+                    var cartoes = QRCODES.cartoes();
+                    var folhas = document.getElementById('folhas');
+                    folhas.innerHTML = '';
+
+                    // 4 cartões por folha
+                    for (var i = 0; i < cartoes.length; i += 4) {
+
+                        var folha = document.createElement('div');
+                        folha.className = 'folha';
+
+                        cartoes.slice(i, i + 4).forEach((cartao) => {
+                            folha.appendChild(QRCODES.criarCartao(cartao));
+                        });
+
+                        folhas.appendChild(folha);
+
+                    }
+
+                },
+
+                criarCartao: (cartao) => {
+
+                    var div = document.createElement('div');
+                    div.className = 'cartao' + (cartao.mesa ? ' cartao-mesa' : '');
+                    div.innerHTML =
+                        '<img class="cartao-logo" src="' + COMUM.escapar(EMPRESA.logo) + '" alt="" />' +
+                        '<p class="cartao-empresa">' + COMUM.escapar(EMPRESA.nome) + '</p>' +
+                        '<p class="cartao-titulo">' + COMUM.escapar(cartao.titulo) + '</p>' +
+                        '<div class="cartao-qr"></div>' +
+                        '<p class="cartao-texto">' + COMUM.escapar(cartao.texto) + '</p>' +
+                        '<button type="button" class="botao pequeno nao-imprimir"><i class="fas fa-download"></i> Baixar PNG</button>';
+
+                    var qr = COMUM.desenharQRCode(cartao.url, 400);
+                    qr.title = cartao.url;
+                    div.querySelector('.cartao-qr').appendChild(qr);
+                    div.querySelector('button').onclick = () => QRCODES.baixarPNG(cartao);
+
+                    return div;
+
+                },
+
+                // imagem grande para usar nas artes do Instagram
+                baixarPNG: (cartao) => {
+
+                    var largura = 1080, altura = 1350;
+                    var canvas = document.createElement('canvas');
+                    canvas.width = largura;
+                    canvas.height = altura;
+
+                    var ctx = canvas.getContext('2d');
+                    var cor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim() || '#000';
+
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, largura, altura);
+
+                    ctx.textAlign = 'center';
+                    ctx.fillStyle = cor;
+                    ctx.font = '600 42px Poppins, Arial, sans-serif';
+                    ctx.fillText(EMPRESA.nome.toUpperCase(), largura / 2, 150);
+
+                    ctx.fillStyle = '#212121';
+                    ctx.font = 'bold 96px Poppins, Arial, sans-serif';
+                    ctx.fillText(cartao.titulo, largura / 2, 270);
+
+                    var qr = COMUM.desenharQRCode(cartao.url, 760);
+                    ctx.drawImage(qr, (largura - 760) / 2, 330, 760, 760);
+
+                    ctx.fillStyle = '#4f4f4f';
+                    ctx.font = '36px Poppins, Arial, sans-serif';
+                    QRCODES.quebrarTexto(ctx, cartao.texto, largura / 2, 1170, 900, 48);
+
+                    var link = document.createElement('a');
+                    link.download = cartao.arquivo + '.png';
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+
+                },
+
+                quebrarTexto: (ctx, texto, x, y, larguraMaxima, altura) => {
+
+                    var linha = '';
+
+                    texto.split(' ').forEach((palavra) => {
+                        var teste = linha ? linha + ' ' + palavra : palavra;
+                        if (ctx.measureText(teste).width > larguraMaxima && linha) {
+                            ctx.fillText(linha, x, y);
+                            linha = palavra;
+                            y += altura;
+                        }
+                        else {
+                            linha = teste;
+                        }
+                    });
+
+                    ctx.fillText(linha, x, y);
+
+                }
+
+            };
+
+            // com ?loja=, espera os dados da loja chegarem do banco
+            LOJA.carregar().then(() => {
+
+                document.title = 'QR codes - ' + EMPRESA.nome;
+                document.getElementById('txtMesaFinal').value = (EMPRESA.pedido || {}).quantidadeMesas || 1;
+
+                ['txtMesaInicial', 'txtMesaFinal', 'chkGeral', 'chkBio'].forEach((id) => {
+                    document.getElementById(id).addEventListener('change', QRCODES.gerar);
+                });
+
+                QRCODES.gerar();
+
+            });
+
+        </script>
+
+    </body>
+
+</html>

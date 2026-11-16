@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 320" role="img" aria-label="Reserva de mesa">
+  <circle cx="200" cy="160" r="140" fill="#fff2cc"/>
+  <rect x="110" y="70" width="180" height="170" rx="16" fill="#fff" stroke="#212121" stroke-width="8"/>
+  <rect x="110" y="70" width="180" height="45" rx="16" fill="#ffbf00"/>
+  <rect x="150" y="50" width="12" height="40" rx="6" fill="#212121"/>
+  <rect x="238" y="50" width="12" height="40" rx="6" fill="#212121"/>
+  <g fill="#cccccc">
+    <rect x="135" y="135" width="28" height="22" rx="4"/><rect x="186" y="135" width="28" height="22" rx="4"/><rect x="237" y="135" width="28" height="22" rx="4"/>
+    <rect x="135" y="175" width="28" height="22" rx="4"/><rect x="237" y="175" width="28" height="22" rx="4"/>
+  </g>
+  <rect x="186" y="175" width="28" height="22" rx="4" fill="#ffbf00"/>
+  <circle cx="300" cy="230" r="34" fill="#2ecc71"/>
+  <path d="M284 230l11 11 20-22" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
